@@ -1,5 +1,6 @@
 package ch.joris.morse;
 
+import android.os.Handler;
 import android.os.Vibrator;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
@@ -7,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ProgressBar;
 import android.widget.TextView;
 
 import java.util.ArrayList;
@@ -18,6 +20,9 @@ import java.util.ArrayList;
 public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> implements View.OnClickListener {
     private ArrayList<MorsePattern> values;
     private Vibrator vibrator;
+    public ProgressBar progressBar;
+    public int progressStatus = 0;
+    private Handler handler = new Handler();
 
     public MorsePattern findVibrationPatternById(int id) {
         return values.get(id);
@@ -26,7 +31,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     public MyAdapter(ArrayList<MorsePattern> data, Vibrator vibrator) {
         values = data;
         this.vibrator = vibrator;
-        // TODO: finish list with patterns for save and replay function.
+        // TODO: DEBUG: finish list with patterns for save and replay function.
+
 
     }
 
@@ -43,9 +49,13 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         }
         vibrator.vibrate(vibrationPattern,-1);
 
+
         // todo: func: findVibrationPatternById
         Log.d(",,", "PLAYING MORSE WITH ID: " + id);
     }
+
+    // todo. write down time : 08:10-08:30
+    // todo. write down time : 17:20-17:50
 
 
 // Provide a reference to the views for each data item
@@ -55,15 +65,37 @@ public static class MyViewHolder extends RecyclerView.ViewHolder {
     // each data item is just a string in this case
     public TextView textView;
     public Button playButton;
+    public ProgressBar progressBar;
 
     public MyViewHolder(View v) {
         super(v);
         textView = (TextView) v.findViewById(R.id.textView);
         playButton = (Button) v.findViewById(R.id.playFromListButton);
+        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
+
+      /*  new Thread(new Runnable() {
+            public void run() {
+                while (progressStatus < 100) {
+                    progressStatus += 1;
+                    // Update the progress bar and display the
+                    //current value in the text view
+                    handler.post(new Runnable() {
+                        public void run() {
+                            progressBar.setProgress(progressStatus);
+                            textView.setText(progressStatus+"/"+progressBar.getMax());
+                        }
+                    });
+                    try {
+                        // Sleep for 200 milliseconds.
+                        Thread.sleep(200);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+            }
+        }).start(); */
     }
-
 }
-
 
     @Override
     public MyAdapter.MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
@@ -81,7 +113,7 @@ public static class MyViewHolder extends RecyclerView.ViewHolder {
         holder.textView.setText(String.valueOf(pattern.getId()));
         holder.playButton.setOnClickListener(this);
 
-        // TODO: find out what add and remove is for
+        // TODO: find out what add() and remove() is for
         // add(position, pattern);
 
         // TODO: write remove funuction with an icon in the card
@@ -102,6 +134,10 @@ public static class MyViewHolder extends RecyclerView.ViewHolder {
         return values.size();
     }
 
+}
+
+
+/*
 // Provide a reference to the views for each data item
 // Complex data items may need more than one view per item, and
 // you provide access to all the views for a data item in a view holder
@@ -117,4 +153,4 @@ public class ViewHolder extends RecyclerView.ViewHolder {
         txtHeader = (TextView) v.findViewById(R.id.textView);
     }
 }
-}
+ */

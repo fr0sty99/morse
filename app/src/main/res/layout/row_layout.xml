@@ -1,20 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
+
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="fill_parent"
-    android:layout_height="?android:attr/listPreferredItemHeight"
-    android:padding="6dip"
-    android:orientation="vertical">
+    android:layout_height="wrap_content"
+    android:orientation="vertical"
+    android:padding="6dip">
+
     <TextView
         android:id="@+id/textView"
-        android:layout_width="fill_parent"
+        android:layout_width="240dp"
         android:layout_height="wrap_content"
         android:gravity="center_vertical"
-        android:text="Patter X"
+        android:text="Pattern X"
         android:textSize="16sp" />
+    <LinearLayout
+        android:layout_width="fill_parent"
+        android:layout_height="wrap_content"
+        android:orientation="horizontal"
+        android:padding="6dip"
+        android:weightSum="1">
+        <Button
+            android:id="@+id/playFromListButton"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Play" />
+        <Button
+            android:id="@+id/sendButton"
+            android:layout_width="90dp"
+            android:layout_height="wrap_content"
+            android:layout_weight="0.5"
+            android:text="Send"
+            android:textSize="12sp" />
+    </LinearLayout>
 
-    <Button
-        android:id="@+id/playFromListButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="@style/?android:attr/progressBarStyleHorizontal"
+            android:layout_width="match_parent"
+            android:layout_height="30dp"
+            android:layout_weight="0.5"
+            android:indeterminate="true"
+            android:max="100"
+            android:progress="1"
+            android:progressDrawable="@android:drawable/progress_indeterminate_horizontal"
+            android:progressTint="@android:drawable/progress_horizontal"
+            android:visibility="visible"
+            tools:visibility="visible" />
 
+    </LinearLayout>
 </LinearLayout>

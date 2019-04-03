@@ -8,6 +8,7 @@ import android.os.Vibrator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
+import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
@@ -42,6 +43,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private RecyclerView.Adapter myAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    private SparseArray<WaitingTask> mWaitingTaskSparseArray = new SparseArray<>();
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -59,8 +62,12 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         vibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
 
-        myAdapter = new MyAdapter(morsePatternList, vibrator);
-        recyclerView.setAdapter(myAdapter);
+        // todo. implement new adapter for asynchronous callbacks in proressbar in recyclerview
+        ProgressAdapter progressAdapter = new ProgressAdapter();
+        recyclerView.setAdapter(progressAdapter);
+
+      //  myAdapter = new MyAdapter(morsePatternList, vibrator);
+       // recyclerView.setAdapter(myAdapter);
 
         recordButton= (Button) findViewById(R.id.recordButton);
         playButton = (Button) findViewById(R.id.playButton);

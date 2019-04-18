@@ -25,7 +25,12 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
     private Handler handler = new Handler();
 
     public MorsePattern findVibrationPatternById(int id) {
-        return values.get(id);
+        MorsePattern pattern = null;
+        int counter = 0;
+        while(pattern == null || pattern.getId() != id) {
+            pattern = values.get(counter++);
+        }
+        return pattern;
     }
 
     public MyAdapter(ArrayList<MorsePattern> data, Vibrator vibrator) {
@@ -33,30 +38,27 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
         this.vibrator = vibrator;
         // TODO: DEBUG: finish list with patterns for save and replay function.
 
-
     }
 
     @Override
     public void onClick(View v) {
 
-        int id = Integer.valueOf(((TextView)v.getRootView().findViewById(R.id.textView)).getText().toString());
+        // todo: somehow the id to play a morsePattern is always "0" -> Find out why and fix this bug
+        int id = Integer.valueOf(((TextView) v.getRootView().findViewById(R.id.textView)).getText().toString());
         // start vibration
         MorsePattern pattern = findVibrationPatternById(id);
         ArrayList<Long> morsePattern = pattern.getMorsePattern();
         long[] vibrationPattern = new long[morsePattern.size()];
-        for(int i = 0; i < morsePattern.size(); i++) {
+        for (int i = 0; i < morsePattern.size(); i++) {
             vibrationPattern[i] = morsePattern.get(i);
         }
-        vibrator.vibrate(vibrationPattern,-1);
+
+        vibrator.vibrate(vibrationPattern, -1);
 
 
         // todo: func: findVibrationPatternById
         Log.d(",,", "PLAYING MORSE WITH ID: " + id);
     }
-
-    // todo. write down time : 08:10-08:30
-    // todo. write down time : 17:20-17:50
-
 
 // Provide a reference to the views for each data item
 // Complex data items may need more than one view per item, and
@@ -71,7 +73,6 @@ public static class MyViewHolder extends RecyclerView.ViewHolder {
         super(v);
         textView = (TextView) v.findViewById(R.id.textView);
         playButton = (Button) v.findViewById(R.id.playFromListButton);
-        progressBar = (ProgressBar) v.findViewById(R.id.progressBar);
 
       /*  new Thread(new Runnable() {
             public void run() {

@@ -8,15 +8,12 @@ import android.os.Vibrator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
-import android.util.SparseArray;
 import android.view.MotionEvent;
 import android.view.View;
 import android.widget.Button;
 
 import com.google.gson.Gson;
-import com.google.gson.reflect.TypeToken;
 
-import java.lang.reflect.Type;
 import java.util.ArrayList;
 
 public class MainActivity extends Activity implements View.OnTouchListener {
@@ -25,7 +22,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private Gson gson;
 
     private Button recordButton;
-    private Button playButton;
     private Button morseButton;
 
     private Vibrator vibrator;
@@ -42,8 +38,6 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     private RecyclerView recyclerView;
     private RecyclerView.Adapter myAdapter;
     private RecyclerView.LayoutManager layoutManager;
-
-    private SparseArray<WaitingTask> mWaitingTaskSparseArray = new SparseArray<>();
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,20 +56,24 @@ public class MainActivity extends Activity implements View.OnTouchListener {
 
         vibrator = (Vibrator) getApplicationContext().getSystemService(Service.VIBRATOR_SERVICE);
 
-        // todo. implement new adapter for asynchronous callbacks in proressbar in recyclerview
-        ProgressAdapter progressAdapter = new ProgressAdapter();
-        recyclerView.setAdapter(progressAdapter);
+        /* todo. implement new adapter for asynchronous callbacks in progessbar in recyclerview
+         ProgressAdapter progressAdapter = new ProgressAdapter();
+         recyclerView.setAdapter(progressAdapter);
 
-      //  myAdapter = new MyAdapter(morsePatternList, vibrator);
-       // recyclerView.setAdapter(myAdapter);
+        List<ProgressObject> progressObjects = new ArrayList<>();
+        for (int i = 0; i < NUM_OF_ITEMS; i++) {
+            progressObjects.add(new ProgressObject(i, "Position " + i, 0));
+        }
+        progressAdapter.updateProgressObjects(progressObjects, mWaitingTaskSparseArray);
+    */
+
+        myAdapter = new MyAdapter(morsePatternList, vibrator);
+        recyclerView.setAdapter(myAdapter);
 
         recordButton= (Button) findViewById(R.id.recordButton);
-        playButton = (Button) findViewById(R.id.playButton);
         morseButton = (Button) findViewById(R.id.morseButton);
 
         recordButton.setOnTouchListener(this);
-        playButton.setOnTouchListener(this);
-        playButton.setEnabled(false);
         morseButton.setOnTouchListener(this);
         morseButton.setEnabled(false);
     }
@@ -94,11 +92,11 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                         recording = false;
                         morseButton.setEnabled(false);
                         recordButton.setText("Record Pattern");
-                        playButton.setEnabled(true);
-
                         if(morsePattern.size() > 0) {
                             morsePatternList.add(new MorsePattern(id++, morsePattern));
                             myAdapter.notifyDataSetChanged();
+                            morsePattern = new ArrayList<>();
+                            counter = 0;
                         }
                     }
                 }
@@ -115,19 +113,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                     morsePattern.add(counter++, (afterVibrate-startVibrate));
                 }
                     break;
-            case R.id.playButton:
-                long[] vibrationPattern;
-                Type type = new TypeToken<ArrayList<Long>>() {}.getType();
-                String json = sharedPreferences.getString(getString(R.string.patternKey), "failed");
-                ArrayList<Long> patternAsList =  gson.fromJson(json, type);
-                vibrationPattern = new long[patternAsList.size()];
-                for(int i = 0; i < patternAsList.size(); i++) {
-                    vibrationPattern[i] = patternAsList.get(i);
-                }
-                vibrator.vibrate(vibrationPattern, -1); // -1 equals NO_REPEAT
-                break;
         }
-
         return false;
     }
 }

@@ -12,14 +12,14 @@ import android.widget.TextView;
 
 public class ProgressViewHolder extends RecyclerView.ViewHolder implements WaitingListener {
     private ProgressBar mProgressBar;
-    private TextView mProgressText;
+    private TextView mTextView;
     SparseArray<WaitingTask> mWaitingTaskSparseArray;
     private int mId;
 
     ProgressViewHolder(View itemView, SparseArray<WaitingTask> mWaitingTaskSparseArray) {
         super(itemView);
         this.mWaitingTaskSparseArray = mWaitingTaskSparseArray;
-        mProgressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
+       // mProgressBar = (ProgressBar) itemView.findViewById(R.id.progressBar);
     }
 
     /**
@@ -32,7 +32,6 @@ public class ProgressViewHolder extends RecyclerView.ViewHolder implements Waiti
      */
     void bind(final ProgressObject progressObject) {
         mId = progressObject.getId();
-        mProgressText.setText(progressObject.getTitle());
         mProgressBar.setProgress(progressObject.getProgress());
 
         WaitingTask task = mWaitingTaskSparseArray.get(mId);

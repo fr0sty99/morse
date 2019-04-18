@@ -39,9 +39,9 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical">
-        <ProgressBar
+       <!-- <ProgressBar
             android:id="@+id/progressBar"
-            style="@style/?android:attr/progressBarStyleHorizontal"
+            style="?android:attr/progressBarStyleHorizontal"
             android:layout_width="match_parent"
             android:layout_height="30dp"
             android:layout_weight="0.5"
@@ -51,7 +51,7 @@
             android:progressDrawable="@android:drawable/progress_indeterminate_horizontal"
             android:progressTint="@android:drawable/progress_horizontal"
             android:visibility="visible"
-            tools:visibility="visible" />
+            tools:visibility="visible" /> -->
 
     </LinearLayout>
 </LinearLayout>

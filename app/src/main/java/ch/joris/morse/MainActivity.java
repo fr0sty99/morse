@@ -2,6 +2,7 @@ package ch.joris.morse;
 
 import android.app.Activity;
 import android.app.Service;
+import android.bluetooth.BluetoothHeadset;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -34,6 +35,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     long afterVibrate;
     boolean recording = false;
     private int id = 0;
+    private BluetoothHeadset bluetoothHeadset;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter myAdapter;
@@ -44,7 +46,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_main);
-        recyclerView =  (RecyclerView) findViewById(R.id.morseList);
+        recyclerView = (RecyclerView) findViewById(R.id.morseList);
 
         recyclerView.setHasFixedSize(true);
 
@@ -70,7 +72,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         myAdapter = new MyAdapter(morsePatternList, vibrator);
         recyclerView.setAdapter(myAdapter);
 
-        recordButton= (Button) findViewById(R.id.recordButton);
+        recordButton = (Button) findViewById(R.id.recordButton);
         morseButton = (Button) findViewById(R.id.morseButton);
 
         recordButton.setOnTouchListener(this);
@@ -82,8 +84,8 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     public boolean onTouch(View v, MotionEvent event) {
         switch (v.getId()) {
             case R.id.recordButton:
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
-                    if(!recording) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
+                    if (!recording) {
                         afterVibrate = System.currentTimeMillis(); // start Recordinpg
                         recordButton.setText("Stop Recording");
                         recording = true;
@@ -92,7 +94,7 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                         recording = false;
                         morseButton.setEnabled(false);
                         recordButton.setText("Record Pattern");
-                        if(morsePattern.size() > 0) {
+                        if (morsePattern.size() > 0) {
                             morsePatternList.add(new MorsePattern(id++, morsePattern));
                             myAdapter.notifyDataSetChanged();
                             morsePattern = new ArrayList<>();
@@ -102,17 +104,17 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 }
                 break;
             case R.id.morseButton:
-                if(event.getAction() == MotionEvent.ACTION_DOWN) {
+                if (event.getAction() == MotionEvent.ACTION_DOWN) {
                     startVibrate = System.currentTimeMillis();
-                    morsePattern.add(counter++, (startVibrate-afterVibrate));
+                    morsePattern.add(counter++, (startVibrate - afterVibrate));
                     vibrator.vibrate(100000);
-                    Log.d("Main:","beforeLastTime: " + (startVibrate-afterVibrate));
-                } else if(event.getAction() == MotionEvent.ACTION_UP) {
+                    Log.d("Main:", "beforeLastTime: " + (startVibrate - afterVibrate));
+                } else if (event.getAction() == MotionEvent.ACTION_UP) {
                     afterVibrate = System.currentTimeMillis();
                     vibrator.cancel();
-                    morsePattern.add(counter++, (afterVibrate-startVibrate));
+                    morsePattern.add(counter++, (afterVibrate - startVibrate));
                 }
-                    break;
+                break;
         }
         return false;
     }

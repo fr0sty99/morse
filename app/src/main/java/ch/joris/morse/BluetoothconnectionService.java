@@ -17,7 +17,7 @@ public class BluetoothconnectionService {
     // TODO: do logs: errors, server setup  with uuid, run, etc...
 
     // TODO: next tut: https://www.youtube.com/watch?v=UGtMNk9lriw
-    
+
     private static final String TAG = "BluetoothconnectionServ";
     private static final  String appname = "bluetoothAdapter";
     private static final UUID MY_UUID_INSECURE = UUID.randomUUID();

@@ -8,6 +8,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
@@ -42,9 +43,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
     @Override
     public void onClick(View v) {
-
-        // todo: somehow the id to play a morsePattern is always "0" -> Find out why and fix this bug
-        int id = Integer.valueOf(((TextView) v.getRootView().findViewById(R.id.textView)).getText().toString());
+        LinearLayout parent = (LinearLayout) v.getParent().getParent();
+        int id = Integer.valueOf(((TextView) parent.findViewById(R.id.textView)).getText().toString());
         // start vibration
         MorsePattern pattern = findVibrationPatternById(id);
         ArrayList<Long> morsePattern = pattern.getMorsePattern();
@@ -55,8 +55,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> impl
 
         vibrator.vibrate(vibrationPattern, -1);
 
-
-        // todo: func: findVibrationPatternById
         Log.d(",,", "PLAYING MORSE WITH ID: " + id);
     }
 

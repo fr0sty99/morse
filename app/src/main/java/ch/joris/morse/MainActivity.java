@@ -2,7 +2,12 @@ package ch.joris.morse;
 
 import android.app.Activity;
 import android.app.Service;
-import android.bluetooth.BluetoothHeadset;
+import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Vibrator;
@@ -35,15 +40,58 @@ public class MainActivity extends Activity implements View.OnTouchListener {
     long afterVibrate;
     boolean recording = false;
     private int id = 0;
-    private BluetoothHeadset bluetoothHeadset;
 
     private RecyclerView recyclerView;
     private RecyclerView.Adapter myAdapter;
     private RecyclerView.LayoutManager layoutManager;
 
+    private BluetoothAdapter bluetoothAdapter;
+
+    private final int REQUEST_ENABLE_BT = 1; // find out what this is exactly
+
+
+    // bluetooth: In order to receive information about each device discovered, your application must register a BroadcastReceiver for the ACTION_FOUND intent.
+    // Create a BroadcastReceiver for ACTION_FOUND.
+    private final BroadcastReceiver receiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Discovery has found a device. Get the BluetoothDevice
+                // object and its info from the Intent.
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                String deviceName = device.getName();
+                String deviceHardwareAddress = device.getAddress(); // MAC address
+                Log.d("bluetooth", "Name: " + deviceName);
+                Log.d("bluetooth", "MAC: " + deviceHardwareAddress);
+                String name2 = device.getName();
+                Log.d("bluetooth", "Name 2: " + name2);
+
+
+                // TODO: To initiate a connection with a Bluetooth device, all that's needed from the associated BluetoothDevice object is the MAC address, which you retrieve by calling getAddress()
+            }
+        }
+    };
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+
+        bluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if(bluetoothAdapter == null) {
+            // this device doesnt support bluetooth
+        }
+        boolean enabled = bluetoothAdapter.isEnabled();
+        if(!bluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        // Register for broadcasts when a device is discovered.
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(receiver, filter);
+        // from here, we can call startDiscovery
+        // The discovery process usually involves an inquiry scan of about 12 seconds, followed by a page scan of each device found to retrieve its Bluetooth name.
+        boolean discoverySuccessfullyStarted = bluetoothAdapter.startDiscovery();
 
         setContentView(R.layout.activity_main);
         recyclerView = (RecyclerView) findViewById(R.id.morseList);
@@ -78,6 +126,13 @@ public class MainActivity extends Activity implements View.OnTouchListener {
         recordButton.setOnTouchListener(this);
         morseButton.setOnTouchListener(this);
         morseButton.setEnabled(false);
+    }
+
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        String asd = "asd";
+        // super.onActivityResult(requestCode, resultCode, data);
     }
 
     @Override
@@ -117,5 +172,15 @@ public class MainActivity extends Activity implements View.OnTouchListener {
                 break;
         }
         return false;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+
+
+        // Don't forget to unregister the ACTION_FOUND receiver.
+        unregisterReceiver(receiver);
+
     }
 }

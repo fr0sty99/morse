@@ -29,9 +29,7 @@ public class BluetoothMorseChatFragment extends Fragment {
 
     // 1 view to display messages, on the bottom on this view theres a button to start record a pattern, record a pattern and send it. (overlay with showing/hiding each buttons)
     private RecyclerView conversationView;
-    private Button startRecordButton;
-    private Button recordPatternButton;
-    private Button sendMorseButton;
+    private Button morseButtom;
 
     /**
      * Array adapter for the conversation thread

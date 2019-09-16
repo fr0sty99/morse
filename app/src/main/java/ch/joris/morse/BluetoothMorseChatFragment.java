@@ -14,11 +14,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.ListView;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import static android.R.id.message;
-import static ch.joris.morse.R.id.textView;
 
 public class BluetoothMorseChatFragment extends Fragment {
 
@@ -38,6 +34,10 @@ public class BluetoothMorseChatFragment extends Fragment {
 
     private ArrayAdapter<MorsePattern> conversationArrayAdapter;
 
+    /**
+     * String buffer for outgoing messages
+     */
+    private StringBuffer outStringBuffer;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {

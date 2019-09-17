@@ -2,6 +2,7 @@ package ch.joris.morse;
 
 import android.app.Fragment;
 import android.bluetooth.BluetoothAdapter;
+import android.bluetooth.BluetoothDevice;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
@@ -134,10 +135,67 @@ public class BluetoothMorseChatFragment extends Fragment {
 
 
         chatService = new BluetoothMorseChatService(getActivity(), handler);
+
+        // init buffer for outgoing messages
+        outStringBuffer = new StringBuffer("");
     }
 
     private final Handler handler = new Handler() {
 
     };
+    /**
+     * Makes this device discoverable for 300 seconds (5 minutes).
+     */
+
+    private void ensureDiscoverable() {
+        if (bluetoothAdapter.getScanMode() !=
+                BluetoothAdapter.SCAN_MODE_CONNECTABLE_DISCOVERABLE) {
+            Intent discoverableIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_DISCOVERABLE);
+            discoverableIntent.putExtra(BluetoothAdapter.EXTRA_DISCOVERABLE_DURATION, 300);
+            startActivity(discoverableIntent);
+        }
+    }
+
+    /**
+     * Sends a message.
+     *
+     * @param message A string of text to send.
+     */
+    private void sendMessage(String message) {
+        // Check that we're actually connected before trying anything
+        if (chatService.getState() != BluetoothMorseChatService.STATE_CONNECTED) {
+            Toast.makeText(getActivity(), R.string.not_connected, Toast.LENGTH_SHORT).show();
+            return;
+        }
+
+        // Check that there's actually something to send
+        if (message.length() > 0) {
+            // Get the message bytes and tell the BluetoothChatService to write
+            byte[] send = message.getBytes();
+            chatService.write(send);
+
+            // Reset out string buffer to zero and clear the edit text field
+            outStringBuffer.setLength(0);
+            // TODO: think about if we need to do something here for our case
+          //  outEditText.setText(mOutStringBuffer);
+        }
+    }
+
+    /**
+     * Establish connection with other device
+     *
+     * @param data   An {@link Intent} with {@link DeviceListActivity#EXTRA_DEVICE_ADDRESS} extra.
+     * @param secure Socket Security type - Secure (true) , Insecure (false)
+     */
+    private void connectDevice(Intent data, boolean secure) {
+        // Get the device MAC address
+        String address = data.getExtras()
+                .getString(DeviceListActivity.EXTRA_DEVICE_ADDRESS);
+        // Get the BluetoothDevice object
+        BluetoothDevice device = bluetoothAdapter.getRemoteDevice(address);
+        // Attempt to connect to the device
+        chatService.connect(device, secure);
+    }
+
 }
 
